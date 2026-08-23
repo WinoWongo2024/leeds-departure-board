@@ -19,7 +19,7 @@ function updateClock() {
   if (clockEl) clockEl.textContent = timeString;
 }
 
-/** Deterministic delay based on service id (same every refresh) */
+/** Deterministic delay based on service id (stable across refreshes) */
 function getDelayMinutes(id) {
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
@@ -27,33 +27,49 @@ function getDelayMinutes(id) {
   }
   const val = Math.abs(hash) % 100;
 
-  if (val < 72) return 0;           // ~72% on time
-  if (val < 88) return (val % 8) + 3; // small delay 3-10 min
-  if (val < 96) return (val % 12) + 8; // medium 8-19 min
-  return -1;                        // cancelled
-}
-
-function formatExpected(std, delay) {
-  if (delay === -1) return { text: 'Cancelled', className: 'status-cancelled' };
-  if (delay === 0) return { text: 'On time', className: 'status-on-time' };
-
-  // Calculate expected time
-  const [h, m] = std.split(':').map(Number);
-  const totalMins = h * 60 + m + delay;
-  const eh = Math.floor(totalMins / 60) % 24;
-  const em = totalMins % 60;
-  const expected = `${String(eh).padStart(2, '0')}:${String(em).padStart(2, '0')}`;
-
-  return {
-    text: `Exp. ${expected}`,
-    className: 'status-delayed',
-    delayText: `+${delay}`
-  };
+  if (val < 70) return 0;            // ~70% on time
+  if (val < 87) return (val % 7) + 3; // 3–9 min
+  if (val < 96) return (val % 11) + 8; // 8–18 min
+  return -1;                         // cancelled
 }
 
 function timeToMinutes(t) {
   const [h, m] = t.split(':').map(Number);
   return h * 60 + m;
+}
+
+function minutesToTime(mins) {
+  const h = Math.floor(mins / 60) % 24;
+  const m = mins % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function getServiceStatus(std, delay) {
+  if (delay === -1) {
+    return {
+      text: 'Cancelled',
+      className: 'status-cancelled',
+      expectedMins: timeToMinutes(std) // use scheduled for filtering
+    };
+  }
+
+  const stdMins = timeToMinutes(std);
+  const expectedMins = stdMins + delay;
+
+  if (delay === 0) {
+    return {
+      text: 'On time',
+      className: 'status-on-time',
+      expectedMins
+    };
+  }
+
+  return {
+    text: `Exp. ${minutesToTime(expectedMins)}`,
+    className: 'status-delayed',
+    delayText: `+${delay}`,
+    expectedMins
+  };
 }
 
 function renderDepartures(data) {
@@ -63,29 +79,40 @@ function renderDepartures(data) {
   const now = new Date();
   const currentMins = now.getHours() * 60 + now.getMinutes();
 
-  // Show services from ~10 mins ago onwards (so recently departed still visible briefly)
-  const windowStart = currentMins - 10;
-
-  const upcoming = data.departures
+  // Realistic window:
+  // - Show a service if its *expected* departure is still in the future
+  // - Or it was due in the last 2 minutes (just departed)
+  // - Cancelled services disappear once their scheduled time has passed
+  const processed = data.departures
     .map(dep => {
       const delay = getDelayMinutes(dep.id);
-      const expected = formatExpected(dep.std, delay);
-      return { ...dep, delay, expected };
+      const status = getServiceStatus(dep.std, delay);
+      return { ...dep, delay, status };
     })
     .filter(dep => {
-      const stdMins = timeToMinutes(dep.std);
-      // Keep services that haven't long departed
-      return stdMins + (dep.delay > 0 ? dep.delay : 0) >= windowStart;
-    })
-    .slice(0, 18); // limit visible rows
+      const expected = dep.status.expectedMins;
 
-  if (upcoming.length === 0) {
+      if (dep.delay === -1) {
+        // Cancelled: only show until scheduled time has passed
+        return timeToMinutes(dep.std) >= currentMins - 1;
+      }
+
+      // Normal / delayed: show if expected time is still ahead or just gone
+      return expected >= currentMins - 2;
+    })
+    .sort((a, b) => a.status.expectedMins - b.status.expectedMins)
+    .slice(0, 14); // sensible number of rows for a real board
+
+  if (processed.length === 0) {
     list.innerHTML = '<div class="loading">No more departures today</div>';
     return;
   }
 
-  list.innerHTML = upcoming.map(dep => {
-    const viaHtml = dep.via ? `<div class="via">via ${dep.via}</div>` : '';
+  list.innerHTML = processed.map(dep => {
+    const viaHtml = dep.via
+      ? `<div class="via-marquee"><span>via ${dep.via}</span></div>`
+      : '';
+
     const operatorColour = OPERATOR_COLOURS[dep.operatorCode] || '#444';
 
     return `
@@ -96,9 +123,9 @@ function renderDepartures(data) {
           ${viaHtml}
         </div>
         <div class="col-platform">${dep.platform || '—'}</div>
-        <div class="col-expected ${dep.expected.className}">
-          ${dep.expected.text}
-          ${dep.expected.delayText ? `<span class="delay-mins">${dep.expected.delayText}</span>` : ''}
+        <div class="col-expected ${dep.status.className}">
+          ${dep.status.text}
+          ${dep.status.delayText ? `<span class="delay-mins">${dep.status.delayText}</span>` : ''}
         </div>
         <div class="col-operator">
           <span class="op-badge" style="background:${operatorColour}">${dep.operatorCode}</span>
@@ -115,10 +142,11 @@ async function init() {
   try {
     const res = await fetch('data/departures.json');
     const data = await res.json();
+
     renderDepartures(data);
 
-    // Re-render every 30 seconds so the list advances with time
-    setInterval(() => renderDepartures(data), 30000);
+    // Re-evaluate every 20 seconds so the board advances naturally
+    setInterval(() => renderDepartures(data), 20000);
   } catch (err) {
     console.error('Failed to load departures', err);
     document.getElementById('departures-list').innerHTML =
