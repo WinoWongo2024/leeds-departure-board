@@ -3,38 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a1628" />
+  <meta name="theme-color" content="#0b1520" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Leeds – Platform Indicator</title>
+  <title>Leeds Departures</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div id="board" class="platform-board">
+  <div id="board">
     <header class="board-header">
       <div class="station-name">Leeds</div>
-      <div class="clock" id="clock">--:--:--</div>
+      <div class="header-right">
+        <div class="date" id="date"></div>
+        <div class="clock" id="clock">--:--:--</div>
+      </div>
     </header>
 
-    <!-- NEXT train -->
-    <section class="service-slot next-slot" id="next-slot">
-      <div class="slot-label">Next</div>
-      <div class="service-content" id="next-content">
-        <div class="loading">Loading…</div>
-      </div>
-    </section>
+    <div class="panels">
+      <!-- 1st train -->
+      <section class="panel panel-first" id="panel-first">
+        <div class="panel-label">
+          <span class="label-text">1st train</span>
+          <span class="mins-away" id="first-mins"></span>
+        </div>
+        <div class="panel-body" id="first-body">
+          <div class="loading">Loading…</div>
+        </div>
+      </section>
 
-    <!-- FOLLOWING train (cycles) -->
-    <section class="service-slot following-slot" id="following-slot">
-      <div class="slot-label">Following</div>
-      <div class="service-content" id="following-content">
-        <div class="loading">Loading…</div>
-      </div>
-    </section>
+      <!-- 2nd train -->
+      <section class="panel panel-second" id="panel-second">
+        <div class="panel-label">
+          <span class="label-text">2nd train</span>
+          <span class="mins-away" id="second-mins"></span>
+        </div>
+        <div class="panel-body" id="second-body">
+          <div class="loading">Loading…</div>
+        </div>
+      </section>
+    </div>
 
     <footer class="board-footer">
-      <span id="platform-note">Platform indicator simulation</span>
+      <span>Simulated departure board • Leeds (LDS)</span>
     </footer>
   </div>
 
