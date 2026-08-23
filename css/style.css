@@ -1,16 +1,17 @@
-/* Leeds Departure Board – styles */
+/* Leeds Platform Indicator – realistic platform sign style */
 
 :root {
-  --bg: #0a1628;
-  --header-bg: #0d1f38;
-  --text: #f0f4f8;
-  --muted: #8b9cb3;
-  --accent: #e8b923;
-  --row-border: #1a2d4a;
-  --row-hover: #0f2138;
+  --bg: #07111f;
+  --panel: #0c1a2e;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #f59e0b;
+  --next-bg: #0f243d;
+  --following-bg: #0c1e33;
   --on-time: #4ade80;
   --delayed: #fbbf24;
   --cancelled: #f87171;
+  --border: #1e3a5f;
 }
 
 * {
@@ -28,12 +29,14 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-#board {
+.platform-board {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 920px;
+  max-width: 640px;
   margin: 0 auto;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
 }
 
 /* Header */
@@ -41,114 +44,142 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--header-bg);
+  padding: 14px 20px;
+  background: #0a1628;
   border-bottom: 3px solid var(--accent);
   flex-shrink: 0;
 }
 
 .station-name {
-  font-size: 1.45rem;
+  font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
 
-.board-title {
-  font-size: 0.95rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-weight: 600;
-}
-
 .clock {
   font-variant-numeric: tabular-nums;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
 }
 
-/* Column headers */
-.column-headers {
-  display: grid;
-  grid-template-columns: 62px 1fr 54px 108px 70px;
-  gap: 8px;
-  padding: 8px 16px;
-  background: #0b1a2e;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--muted);
-  border-bottom: 1px solid var(--row-border);
-  flex-shrink: 0;
-}
-
-/* Departures list */
-.departures-list {
+/* Service slots */
+.service-slot {
   flex: 1;
-  overflow-y: auto;
-  padding-bottom: env(safe-area-inset-bottom, 10px);
-  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border);
+  min-height: 0;
 }
 
-.loading {
-  padding: 48px 16px;
-  text-align: center;
+.next-slot {
+  background: var(--next-bg);
+}
+
+.following-slot {
+  background: var(--following-bg);
+}
+
+.slot-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   color: var(--muted);
-  font-size: 1rem;
-}
-
-/* Individual row – tighter for more realistic density */
-.departure-row {
-  display: grid;
-  grid-template-columns: 62px 1fr 54px 108px 70px;
-  gap: 8px;
-  padding: 9px 16px;
-  border-bottom: 1px solid var(--row-border);
-  align-items: center;
-  min-height: 48px;
-}
-
-.departure-row:nth-child(even) {
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.col-time {
-  font-size: 1.12rem;
+  padding: 8px 20px 0;
   font-weight: 600;
+}
+
+.service-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 20px 16px;
+  min-height: 0;
+}
+
+/* Individual service block */
+.service {
+  animation: fadeIn 0.45s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.service-main {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.service-time {
+  font-size: 2.1rem;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  min-width: 90px;
 }
 
-.col-destination {
+.service-dest {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  flex: 1;
   min-width: 0;
-  overflow: hidden;
 }
 
-.dest-name {
-  font-size: 1.02rem;
+.service-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.service-platform {
+  font-size: 1.1rem;
   font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: rgba(255,255,255,0.08);
+  padding: 3px 10px;
+  border-radius: 4px;
 }
 
-/* Marquee for via points – classic board style */
-.via-marquee {
-  margin-top: 2px;
-  height: 1.1em;
+.service-status {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.status-on-time { color: var(--on-time); }
+.status-delayed { color: var(--delayed); }
+.status-cancelled { color: var(--cancelled); }
+
+.op-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+/* Marquee for calling points */
+.calling-points {
+  margin-top: 10px;
+  height: 1.3em;
   overflow: hidden;
   position: relative;
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
 
-.via-marquee span {
+.calling-points span {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.95rem;
   color: var(--muted);
   white-space: nowrap;
   padding-left: 100%;
-  animation: marquee 12s linear infinite;
+  animation: marquee 14s linear infinite;
 }
 
 @keyframes marquee {
@@ -156,84 +187,39 @@ html, body {
   100% { transform: translateX(-100%); }
 }
 
-/* Pause marquee on hover for readability */
-.departure-row:hover .via-marquee span {
-  animation-play-state: paused;
+/* Empty / loading states */
+.loading, .no-service {
+  color: var(--muted);
+  font-size: 1.1rem;
+  padding: 12px 0;
 }
 
-.col-platform {
-  font-size: 1.02rem;
-  font-weight: 600;
+/* Footer */
+.board-footer {
+  padding: 8px 20px;
+  font-size: 0.7rem;
+  color: var(--muted);
   text-align: center;
+  background: #0a1628;
+  flex-shrink: 0;
 }
 
-.col-expected {
-  font-size: 0.92rem;
-  font-weight: 500;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  line-height: 1.25;
-}
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .service-time {
+    font-size: 1.7rem;
+    min-width: 75px;
+  }
 
-.status-on-time {
-  color: var(--on-time);
-}
+  .service-dest {
+    font-size: 1.25rem;
+  }
 
-.status-delayed {
-  color: var(--delayed);
-}
-
-.status-cancelled {
-  color: var(--cancelled);
-  font-weight: 600;
-}
-
-.delay-mins {
-  font-size: 0.72rem;
-  opacity: 0.85;
-}
-
-.col-operator {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.op-badge {
-  display: inline-block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 3px 6px;
-  border-radius: 3px;
-  color: #fff;
-  min-width: 30px;
-  text-align: center;
-}
-
-/* Mobile */
-@media (max-width: 520px) {
-  .column-headers,
-  .departure-row {
-    grid-template-columns: 52px 1fr 46px 92px 54px;
-    gap: 6px;
-    padding-left: 12px;
-    padding-right: 12px;
+  .service-main {
+    gap: 12px;
   }
 
   .station-name {
-    font-size: 1.2rem;
-  }
-
-  .col-time {
-    font-size: 1.02rem;
-  }
-
-  .dest-name {
-    font-size: 0.95rem;
-  }
-
-  .via-marquee span {
-    font-size: 0.68rem;
+    font-size: 1.35rem;
   }
 }
