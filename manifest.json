@@ -1,0 +1,11 @@
+{
+  "name": "Leeds Departures",
+  "short_name": "Leeds Board",
+  "description": "Realistic UK train departure board for Leeds station",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#0a1628",
+  "orientation": "any",
+  "icons": []
+}
