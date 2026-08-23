@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a1628" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Leeds Departures</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="board">
+    <header class="board-header">
+      <div class="station-name">Leeds</div>
+      <div class="board-title">Departures</div>
+      <div class="clock" id="clock">--:--:--</div>
+    </header>
+
+    <div class="column-headers">
+      <span class="col-time">Time</span>
+      <span class="col-destination">Destination</span>
+      <span class="col-platform">Plat.</span>
+      <span class="col-expected">Expected</span>
+      <span class="col-operator">Operator</span>
+    </div>
+
+    <div id="departures-list" class="departures-list">
+      <!-- Rows will be injected by JavaScript -->
+      <div class="loading">Loading departures…</div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
