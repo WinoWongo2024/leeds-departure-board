@@ -2,35 +2,51 @@
 
 A realistic UK-style train departure board **Progressive Web App** for **Leeds station (CRS: LDS)**.
 
-- Simulated live departures covering 05:00 – 23:00
-- Deterministic delays (calculated with maths so the same service always shows the same delay)
-- Operator logos for Northern, TransPennine Express, LNER and CrossCountry
-- Designed to closely match real National Rail / Darwin departure boards
-- Fully offline after first visit
-- Installable on iPhone / Android home screen
+**Live demo** (after enabling GitHub Pages):  
+https://winowongo2024.github.io/leeds-departure-board/
 
-## Current Status
-🚧 Just created – scaffolding in progress.
+## Features (current)
+- Full day of simulated departures (05:00 – 23:00)
+- **Deterministic delays** – calculated from service ID so the same train always gets the same delay/cancellation
+- Realistic UK digital board layout (dark theme)
+- Operator badges (Northern, TransPennine Express, LNER, CrossCountry)
+- Live clock
+- Auto-advancing list based on current time
+- Mobile-friendly + PWA-ready (manifest included)
 
-## Goals
-- Look and feel like a real UK station board
-- Calm, realistic simulation (not arcade-style)
-- Clean, maintainable vanilla web code
-- Easy to expand later (arrivals, multiple stations, etc.)
+## How to view it
 
-## Planned Structure
+1. Go to the repository **Settings → Pages**
+2. Under “Build and deployment”, set Source to **Deploy from a branch**
+3. Branch: `main` / folder: `/ (root)`
+4. Save – after a minute the site will be live at the URL above
+
+You can also open `index.html` locally (a simple local server is recommended because of `fetch`).
+
+## Project structure
 ```
 /
 ├── index.html
-├── css/
-├── js/
-├── data/
-│   └── departures.json
-├── assets/
-│   └── operators/
+├── css/style.css
+├── js/app.js
+├── data/departures.json
 ├── manifest.json
-└── sw.js
+└── README.md
 ```
 
-## Licence
-TBD – will be added soon.
+## Technical notes
+- Pure vanilla HTML / CSS / JavaScript
+- Delays use a simple hash of the service `id` (stable across refreshes)
+- Status colours: green = On time, amber = Delayed, red = Cancelled
+- Designed to feel calm and authentic rather than game-like
+
+## Next ideas
+- Real operator logos (SVG)
+- Arrivals board toggle
+- Subtle animations when rows update
+- Service worker for true offline support
+- Custom icons & splash screen for “Add to Home Screen”
+
+---
+
+Built as a fun realistic simulation of a British railway departure board.
