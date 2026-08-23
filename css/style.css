@@ -1,16 +1,15 @@
-/* Leeds Platform Indicator – realistic platform sign style */
+/* Leeds – UK CIS style platform screen */
 
 :root {
-  --bg: #07111f;
-  --panel: #0c1a2e;
+  --bg: #0b1520;
+  --panel: #111e2e;
   --text: #f1f5f9;
   --muted: #94a3b8;
-  --accent: #f59e0b;
-  --next-bg: #0f243d;
-  --following-bg: #0c1e33;
-  --on-time: #4ade80;
-  --delayed: #fbbf24;
-  --cancelled: #f87171;
+  --yellow: #fbbf24;
+  --green: #4ade80;
+  --amber: #f59e0b;
+  --red: #f87171;
+  --line: #fbbf24;
   --border: #1e3a5f;
 }
 
@@ -29,14 +28,12 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-.platform-board {
+#board {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto;
-  border-left: 1px solid var(--border);
-  border-right: 1px solid var(--border);
 }
 
 /* Header */
@@ -44,182 +41,256 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  background: #0a1628;
-  border-bottom: 3px solid var(--accent);
+  padding: 12px 18px;
+  background: #0a1420;
+  border-bottom: 2px solid var(--yellow);
   flex-shrink: 0;
 }
 
 .station-name {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.date {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 2px;
 }
 
 .clock {
-  font-variant-numeric: tabular-nums;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Service slots */
-.service-slot {
+/* Two panels */
+.panels {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+@media (min-width: 700px) {
+  .panels {
+    flex-direction: row;
+  }
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
   border-bottom: 1px solid var(--border);
   min-height: 0;
 }
 
-.next-slot {
-  background: var(--next-bg);
+@media (min-width: 700px) {
+  .panel {
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+  }
+  .panel:last-child {
+    border-right: none;
+  }
 }
 
-.following-slot {
-  background: var(--following-bg);
-}
-
-.slot-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--muted);
-  padding: 8px 20px 0;
-  font-weight: 600;
-}
-
-.service-content {
-  flex: 1;
+.panel-label {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 8px 20px 16px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px 6px;
+  flex-shrink: 0;
+}
+
+.label-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.mins-away {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--yellow);
+}
+
+.panel-body {
+  flex: 1;
+  padding: 4px 16px 16px;
+  overflow-y: auto;
   min-height: 0;
 }
 
-/* Individual service block */
+/* Service block */
 .service {
-  animation: fadeIn 0.45s ease;
+  animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.service-main {
+.service-header {
   display: flex;
   align-items: baseline;
-  gap: 16px;
-  margin-bottom: 6px;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
 .service-time {
-  font-size: 2.1rem;
+  font-size: 1.7rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  min-width: 90px;
+  min-width: 78px;
 }
 
 .service-dest {
-  font-size: 1.55rem;
+  font-size: 1.35rem;
   font-weight: 700;
   line-height: 1.2;
-  flex: 1;
-  min-width: 0;
 }
 
-.service-meta {
+.service-via {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 2px 0 8px 90px;
+}
+
+.service-status-row {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-top: 4px;
+  gap: 12px;
+  margin: 6px 0 12px;
   flex-wrap: wrap;
 }
 
-.service-platform {
-  font-size: 1.1rem;
+.status {
+  font-size: 1rem;
   font-weight: 600;
+}
+
+.status-on-time { color: var(--green); }
+.status-delayed { color: var(--amber); }
+.status-cancelled { color: var(--red); }
+
+.platform {
+  font-size: 0.95rem;
   background: rgba(255,255,255,0.08);
-  padding: 3px 10px;
-  border-radius: 4px;
-}
-
-.service-status {
-  font-size: 1.05rem;
+  padding: 2px 9px;
+  border-radius: 3px;
   font-weight: 600;
 }
-
-.status-on-time { color: var(--on-time); }
-.status-delayed { color: var(--delayed); }
-.status-cancelled { color: var(--cancelled); }
 
 .op-badge {
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 3px 7px;
+  padding: 2px 7px;
   border-radius: 3px;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+/* Calling points with yellow route line */
+.calling-points {
+  margin-top: 8px;
+}
+
+.calling-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stops {
+  list-style: none;
+  position: relative;
+  padding-left: 18px;
+}
+
+.stops::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: var(--line);
+  border-radius: 2px;
+}
+
+.stops li {
+  position: relative;
+  padding: 3px 0 3px 12px;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+.stops li::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  background: var(--line);
+  border-radius: 50%;
+  border: 2px solid var(--panel);
+}
+
+.stops li:last-child {
+  font-weight: 600;
   color: #fff;
 }
 
-/* Marquee for calling points */
-.calling-points {
-  margin-top: 10px;
-  height: 1.3em;
-  overflow: hidden;
-  position: relative;
-  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+.stops li:last-child::before {
+  background: #fff;
+  width: 11px;
+  height: 11px;
+  left: -17px;
 }
 
-.calling-points span {
-  display: inline-block;
-  font-size: 0.95rem;
-  color: var(--muted);
-  white-space: nowrap;
-  padding-left: 100%;
-  animation: marquee 14s linear infinite;
-}
-
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-/* Empty / loading states */
+/* Empty state */
 .loading, .no-service {
   color: var(--muted);
-  font-size: 1.1rem;
-  padding: 12px 0;
+  padding: 20px 0;
+  font-size: 1.05rem;
 }
 
 /* Footer */
 .board-footer {
-  padding: 8px 20px;
+  padding: 8px 16px;
   font-size: 0.7rem;
   color: var(--muted);
   text-align: center;
-  background: #0a1628;
+  background: #0a1420;
   flex-shrink: 0;
 }
 
-/* Mobile adjustments */
+/* Mobile tweaks */
 @media (max-width: 480px) {
   .service-time {
-    font-size: 1.7rem;
-    min-width: 75px;
+    font-size: 1.45rem;
+    min-width: 68px;
   }
-
   .service-dest {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
-
-  .service-main {
-    gap: 12px;
+  .service-via {
+    margin-left: 80px;
   }
-
   .station-name {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
   }
 }
