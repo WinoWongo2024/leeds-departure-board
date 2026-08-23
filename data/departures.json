@@ -1,0 +1,59 @@
+{
+  "station": {
+    "name": "Leeds",
+    "crs": "LDS"
+  },
+  "generated": "2026-08-23",
+  "departures": [
+    {
+      "id": "2T14",
+      "std": "05:17",
+      "destination": "Hull",
+      "via": null,
+      "platform": "15A",
+      "operator": "TransPennine Express",
+      "operatorCode": "TP",
+      "length": 3
+    },
+    {
+      "id": "2N19",
+      "std": "05:19",
+      "destination": "Wigan Wallgate",
+      "via": "Bradford Interchange",
+      "platform": "2A",
+      "operator": "Northern",
+      "operatorCode": "NT",
+      "length": 3
+    },
+    {
+      "id": "1A30",
+      "std": "05:30",
+      "destination": "London Kings Cross",
+      "via": null,
+      "platform": "6",
+      "operator": "LNER",
+      "operatorCode": "GR",
+      "length": 9
+    },
+    {
+      "id": "1M34",
+      "std": "05:34",
+      "destination": "Sheffield",
+      "via": null,
+      "platform": "12A",
+      "operator": "Northern",
+      "operatorCode": "NT",
+      "length": 3
+    },
+    {
+      "id": "1S42",
+      "std": "05:42",
+      "destination": "Chester",
+      "via": "Manchester Victoria",
+      "platform": "16A",
+      "operator": "Northern",
+      "operatorCode": "NT",
+      "length": 5
+    }
+  ]
+}
